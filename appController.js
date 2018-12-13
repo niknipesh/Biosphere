@@ -1,4 +1,5 @@
 App = require("./appModel");
+User = require("./userModel");
 
 
 
@@ -10,12 +11,46 @@ exports.index = function (req, res) {
                 status: "error",
                 message: err,
             });
-        }
-        res.json({
-            status: "success",
-            message: "App Details Retrieved successfully",
-            data: apps
-        });
+        }else{
+            User.find({"email": req.params.email}, function(err, response){
+                if (err){
+                    res.json(err)
+                }else{
+                    //console.log("User:- ",response);
+                    //console.log("Length:- ",response.length);
+                    var key = "isFavourite";
+                    var trueValue = true;
+                    var falseValue = false;
+                    for(var i=0; i<apps.length; i++){
+                       // console.log("apps[",i,"]:- ",apps[i]);
+
+                        for(var j=0; j<response.length; j++){
+                          //  console.log("response[",j,"]:- ", response[j]);
+                            if(response[j].favourites.indexOf(apps[i]._id) >= 0){
+                                console.log("Reached in true");
+                                apps[i][key] = true;
+                            }else{
+                                console.log("Reached in false")
+                                apps[i][key] = false;
+                            }
+                            console.log("apps[",i,"]:- ",apps[i]);
+                        }
+                    }
+                    res.json({
+                        message: 'New app created!',
+                        data: apps,
+                        response: response
+                    });
+
+                }
+            })
+            
+            /*res.json({
+                status: "success",
+                message: "App Details Retrieved successfully",
+                data: apps
+            });*/
+    }
     });
 };
 
@@ -60,6 +95,7 @@ exports.view = function (req, res) {
 
 // Handle delete app actions
 exports.delete = function (req, res) {
+    
     App.remove({
         _id: req.params.app_id
        //appTiltle: req.params.appTitle
@@ -69,7 +105,7 @@ exports.delete = function (req, res) {
         else{
             res.json({
                 status: "success",
-                message: 'Contact deleted',
+                message: 'App deleted',
                 response: response
             });
         }
@@ -97,7 +133,7 @@ exports.update = function (req, res) {
                     res.json(err);
                 }else{
                     res.json({
-                        message: 'Contact Info updated',
+                        message: 'App Info updated',
                         data: response
                     });
                 }

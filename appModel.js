@@ -26,6 +26,9 @@ var appSchema = mongoose.Schema({
     authors:{
         type: [String],
         required: true
+    },
+    isFavourite:{
+        type: Boolean
     }
 
 });

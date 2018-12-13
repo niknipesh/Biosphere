@@ -2,6 +2,7 @@ let router = require('express').Router();
 // Import contact controller
 var contactController = require('./contactController');
 var appController = require('./appController');
+var userController = require('./userController');
 
 
 router.get('/', function (req, res) {
@@ -26,13 +27,23 @@ router.route('/contacts/:contact_id')
 
 
 router.route('/apps')
-    .get(appController.index)
     .post(appController.new);
+
+router.route('/apps/:email')
+    .get(appController.index)
 
 router.route('/apps/:app_id')
     .delete(appController.delete)
     .put(appController.update)
     .patch(appController.update)
+
+
+router.route('/users')
+    .get(userController.index)
+    .post(userController.new)
+
+router.route('/users/:user_id')
+    .put(userController.update)
 
 
 module.exports = router;
